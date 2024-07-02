@@ -1,3 +1,0 @@
-# Personalized Workout Generator
-An AI Agent that generates Personalized Workouts based on you body type and Goals.
-Fast try: https://illa.ai/ai-agent/ILAex4p1C7Zw/detail

@@ -1,5 +1,0 @@
-packages:
-  - "apps/*"
-  - "packages/illa-design/packages/*"
-  - "packages/illa-public-component/*"
-  - "packages/*"
