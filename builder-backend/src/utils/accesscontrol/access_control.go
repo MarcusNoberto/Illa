@@ -58,6 +58,8 @@ const (
 	USER_ROLE_ADMIN     = 2
 	USER_ROLE_EDITOR    = 3
 	USER_ROLE_VIEWER    = 4
+	USER_ROLE_OBSERVER  = 5
+
 )
 
 // global invite permission config
