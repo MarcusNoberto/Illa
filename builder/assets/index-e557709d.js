@@ -1,0 +1,8 @@
+import{o as d,k as o,S as m}from"./@illa-design-402f214a.js";import{u as h,cQ as w,a as f}from"./index-2f1869ab.js";import{r as l}from"./react-9b7e00e3.js";import{P as u}from"./index-323e87cb.js";import{a as E}from"./@emotion-4f16718e.js";import"./codeMirror-vendor-eff8ab8d.js";import"./lodash-lib-6e94956b.js";import"./react-icons-vendor-2430ea65.js";const S=t=>l.createElement("svg",{width:16,height:16,viewBox:"0 0 16 16",fill:"none",xmlns:"http://www.w3.org/2000/svg",...t},l.createElement("path",{fillRule:"evenodd",clipRule:"evenodd",d:"M4 12V13C4 13.5523 4.44772 14 5 14H13C13.5523 14 14 13.5523 14 13V5C14 4.44771 13.5523 4 13 4H12L12 10C12 11.1046 11.1046 12 10 12L4 12Z",fill:"#DADEE6"}),l.createElement("path",{d:"M3 11C2.44772 11 2 10.5523 2 10L2 3C2 2.44772 2.44771 2 3 2L10 2C10.5523 2 11 2.44772 11 3L11 10C11 10.5523 10.5523 11 10 11L3 11Z",fill:"#1D2129"})),g=E`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  width: 100%;
+`,v=t=>{const{attrName:s,handleUpdateMultiAttrDSL:a,value:r,widgetType:i,labelName:p}=t,{t:e}=h(),c=[{label:e("editor.inspect.setter_option.shadow.none"),value:"none"},{label:e("editor.inspect.setter_option.shadow.large"),value:"large"},{label:e("editor.inspect.setter_option.shadow.medium"),value:"medium"},{label:e("editor.inspect.setter_option.shadow.small"),value:"small"}];return d("div",{css:g,children:[o(u,{labelName:p,labelSize:"small"}),o(m,{onChange:n=>{w(f.CHANGE,{element:"component_inspect_select",parameter1:i,parameter2:s,parameter3:n}),a==null||a({[s]:n})},value:r,prefix:o(S,{}),w:"170px",colorScheme:"techPurple",options:c})]})};v.displayName="ShadowSelect";export{v as default};
+//# sourceMappingURL=index-e557709d.js.map

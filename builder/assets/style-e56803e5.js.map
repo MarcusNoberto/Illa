@@ -1,0 +1,1 @@
+{"version":3,"file":"style-e56803e5.js","sources":["../../src/widgetLibrary/ButtonWidget/style.ts"],"sourcesContent":["import { css } from \"@emotion/react\"\n\nexport const buttonLayoutStyle = css`\n  width: 100%;\n  height: 100%;\n`\n"],"names":["buttonLayoutStyle","css"],"mappings":"2CAEO,MAAMA,EAAoBC;AAAA;AAAA;"}

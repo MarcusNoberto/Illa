@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -48,9 +49,12 @@ func (controller *Controller) GetVerificationCode(c *gin.Context) {
 
 // user sign-in
 func (controller *Controller) SignIn(c *gin.Context) {
+	fmt.Println("========== INICIANDO TENTATIVA DE SIGN IN ==========")
 	// get request body
 	req := model.NewSignInRequest()
+	fmt.Printf("USUARIO TENTANDO LOGAR: ========== %s ==========\n", req.Email)
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
+		fmt.Printf("ERRO DE PARSE: ========== %s ==========\n", req.Email)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
 		return
 	}
@@ -58,13 +62,16 @@ func (controller *Controller) SignIn(c *gin.Context) {
 	// validate payload required fields
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
+		fmt.Printf("ERRO DE VALIDACAO DO BODY: ========== %s ==========\n", req.Email)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_REQUEST_BODY_FAILED, "validate request body error: "+err.Error())
 		return
 	}
 
 	// fetch user by email
 	user, err := controller.Storage.UserStorage.RetrieveByEmail(req.Email)
+	fmt.Printf("USUARIO ENCONTRADO: ========== %s ==========\n", user)
 	if err != nil {
+		fmt.Println("========== LOGIN INVALIDO ==========")
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "invalid email or password")
 		return
 	}
@@ -72,6 +79,7 @@ func (controller *Controller) SignIn(c *gin.Context) {
 	// validate password with password digest
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordDigest), []byte(req.Password))
 	if err != nil {
+		fmt.Println("========== SENHA ERRADA: %s ==========", req.Password)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "invalid email or password")
 		return
 	}

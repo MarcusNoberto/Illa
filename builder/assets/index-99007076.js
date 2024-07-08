@@ -1,0 +1,2 @@
+import{k as o,T as a}from"./@illa-design-1f43bb6c.js";import{r as p}from"./react-9b7e00e3.js";import{ed as s}from"./index-4dce6ee8.js";const l=p.memo(t=>{const{children:r,tooltipText:e,tooltipDisabled:i}=t;return o(a,{content:o(s,{textString:e}),colorScheme:"grayBlue",disabled:i,position:"top",autoFitPosition:!1,trigger:"hover",children:r})});l.displayName="TooltipWrapper";export{l as T};
+//# sourceMappingURL=index-99007076.js.map

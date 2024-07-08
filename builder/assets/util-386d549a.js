@@ -1,0 +1,2 @@
+import{g_ as n,g$ as s}from"./index-4dce6ee8.js";const u=(r,e)=>{if(r===""||r==null)return"";let t=r;return r.includes(`{{${e}.dataSources.map((currentItem) => (`)?(t=`${r.substring(`{{${e}.dataSources.map((currentItem) => (`.length,r.length-4)}`,n(t)):t},i=(r,e)=>{const t=s(r);return t===""?t:`{{${e}.dataSources.map((currentItem) => (${t}))}}`};export{i as g,u as r};
+//# sourceMappingURL=util-386d549a.js.map

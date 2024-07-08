@@ -1,0 +1,1 @@
+{"version":3,"file":"signup-c16384a6.js","sources":["../../src/page/user/signup.tsx"],"sourcesContent":["import { FC } from 'react'\n\nconst SignUpPage: FC = () => {\n  return <div>Sign Up Page</div>\n}\n\nexport default SignUpPage\n"],"names":["SignUpPage","jsx"],"mappings":"0GAEA,MAAMA,EAAiB,IACdC,EAAC,OAAI,SAAY,cAAA,CAAA"}

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 
 	"github.com/illacloud/illa-supervisor-backend/src/accesscontrol"
@@ -147,11 +148,14 @@ func (controller *Controller) CanManage(c *gin.Context) {
 	teamMemberRole := model.USER_ROLE_ANONYMOUS
 	if userID != model.USER_ROLE_ANONYMOUS {
 		teamMember, errInRetrieveTeamMember := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndUserID(teamID, userID)
+		//_, errInRetrieveTeamMember := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndUserID(teamID, userID)
 		if errInRetrieveTeamMember != nil {
 			controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_TEAM_MEMBER, "retrieve team member error: "+errInRetrieveTeamMember.Error())
 			return
 		}
 		teamMemberRole = teamMember.ExportUserRole()
+		//teamMemberRole = 5
+		fmt.Printf("========== %s ==========\n", teamMemberRole)
 	}
 
 	// check attribute

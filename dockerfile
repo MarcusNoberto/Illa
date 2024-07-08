@@ -20,8 +20,7 @@ WORKDIR /opt/illa/illa-builder-backend
 RUN cd  /opt/illa/illa-builder-backend
 RUN ls -alh
 
-ARG BE=main
-RUN git clone -b ${BE} https://github.com/illacloud/builder-backend.git ./
+COPY ./builder-backend .
 
 RUN cat ./Makefile
 
@@ -54,8 +53,7 @@ WORKDIR /opt/illa/illa-supervisor-backend
 RUN cd  /opt/illa/illa-supervisor-backend
 RUN ls -alh
 
-ARG SBE=main
-RUN git clone -b ${SBE} https://github.com/illacloud/illa-supervisor-backend.git ./
+COPY ./illa-supervisor-backend .
 
 RUN cat ./Makefile
 

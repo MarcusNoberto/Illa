@@ -1,0 +1,17 @@
+import{h as d,j as t,n as v,F as r,an as R}from"./@illa-design-764f0835.js";import{F as E,as as G,at as x}from"./index-326de5a1.js";import{T as l}from"./index-eab177f8.js";import{r as p}from"./react-bc846394.js";import{u as I,c as q,C as s}from"./style-3f22391e.js";import{R as F,v as _}from"./index-19eb2a59.js";import{R as N}from"./index-a1af0af3.js";import{a as u}from"./@emotion-09d14760.js";import{T as O}from"./Trans-648bfb8e.js";import"./index-86435c63.js";import"./hook-ca124235.js";import"./index-61428de5.js";import"./interface-8df5fe4c.js";import"./utils-0ba2846c.js";import"./style-00a92373.js";import"./upstash-e9b235a2.js";import"./index-4370180f.js";import"./index.esm-11ba4214.js";import"./lodash-lib-cfb0e9ed.js";const V=u`
+  width: 100%;
+  padding: 8px 24px;
+`,j=n=>u`
+  width: 100%;
+  padding: 9px 16px;
+  display: flex;
+  gap: 8px;
+  height: 40px;
+  background: ${n?d("green","08"):d("orange","08")};
+  border-radius: 4px;
+  align-items: center;
+`,D=u`
+  font-size: 16px;
+  color: ${d("orange","03")};
+`,K=n=>{var h,g,f,y;const{resourceID:b}=n,{control:i,watch:k}=I(),{t:e}=E(),{getResourceByID:C}=p.useContext(F),o=C(b),a=(o==null?void 0:o.content)??G,T=k("authentication",a.authentication)==="oauth2",m=((h=a.opts)==null?void 0:h.status)===x.Authenticated,S=((g=a.opts)==null?void 0:g.status)!==x.Initial,c=p.useCallback(A=>()=>{window.open(A,"_blank")},[]),w=p.useMemo(()=>[{label:e("editor.action.form.option.gs.service_account"),value:"serviceAccount"}],[e]);return t(r,{children:v("div",{css:q,children:[t(s,{controlledType:"input",isRequired:!0,title:e("editor.action.resource.db.label.name"),control:i,defaultValue:(o==null?void 0:o.resourceName)??"",rules:[{validate:_}],placeholders:[e("editor.action.resource.db.placeholder.name")],name:"resourceName",tips:e("editor.action.resource.restapi.tip.name")}),t(N,{type:"General Option"}),t(s,{isRequired:!0,title:e("editor.action.form.label.gs.authentication"),defaultValue:a.authentication,name:"authentication",controlledType:"select",control:i,options:w}),T?t(s,{isRequired:!0,title:e("editor.action.form.label.gs.access_type"),defaultValue:((f=a.opts)==null?void 0:f.accessType)??"rw",name:"accessType",controlledType:"radio",control:i,options:[{label:e("editor.action.form.option.gs.read_and_write"),value:"rw"},{label:e("editor.action.form.option.gs.read_only"),value:"r"}]},"editor.action.form.label.gs.access_type"):t(s,{title:e("editor.action.form.label.gs.private_key"),defaultValue:((y=a.opts)==null?void 0:y.privateKey)??"",name:"privateKey",isRequired:!0,rules:[{validate:_}],controlledType:"textarea",control:i,placeholders:[e("editor.action.form.placeholder.gs.private_key")],tips:t(O,{i18nKey:"editor.action.form.tips.gs.private_key",t:e,components:[t(l,{onClick:c("https://console.cloud.google.com/cloud-resource-manager")},"editor.action.form.tips.gs.private_key.console"),t(l,{onClick:c("https://cloud.google.com/docs/authentication/getting-started")},"editor.action.form.tips.gs.private_key.docs"),t(l,{onClick:c("https://developers.google.com/sheets/api/limits")},"editor.action.form.tips.gs.private_key.limit")]})},"editor.action.form.label.gs.private_key"),S&&t("div",{css:V,children:t("div",{css:j(m),children:m?t(r,{children:e("editor.action.form.tips.gs.successfully_authent")}):v(r,{children:[t(R,{css:D}),t(r,{children:e("editor.action.form.tips.gs.failed_to_authentica")})]})})})]})})};K.displayName="GoogleSheetsConfigElement";export{K as default};
+//# sourceMappingURL=index-00482d9a.js.map

@@ -1,0 +1,2 @@
+import{k as r}from"./@illa-design-1f43bb6c.js";import e from"./baseSelect-7242dff4.js";import"./react-9b7e00e3.js";import"./@emotion-08a6282b.js";import"./style-8b1d8060.js";import"./style-6680c91c.js";import"./index-934389e2.js";import"./index-4dce6ee8.js";import"./codeMirror-vendor-320207e2.js";import"./lodash-lib-6e94956b.js";import"./react-icons-vendor-2430ea65.js";const o=t=>r(e,{...t,showSearch:!0,allowClear:!0});o.displayName="SearchSelectSetter";export{o as default};
+//# sourceMappingURL=searchSelect-7a6a8b3d.js.map

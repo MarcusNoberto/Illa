@@ -172,3 +172,27 @@ INSERT INTO team_members (
 ) VALUES (      
     1, 0, 1, 1, to_jsonb('{"Config": 0}'::text), 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 );
+
+INSERT INTO users (
+id, uid, nickname, password_digest, email, avatar, sso_config, customization, created_at, updated_at
+) VALUES (
+2, '00000000-0000-0000-0000-000000000001', 'viewer', '$2a$10$iVIxJRgy1K6RIV389AYg3OiMIbuDyuCIja1xrHGkCljdg/6gdmWXa'::text, 'viewer@gmail.com', '', to_jsonb('{"default": ""}'::text) , to_jsonb('{"Language": "en-US", "IsSubscribed": false}'::text), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+);
+
+INSERT INTO team_members (
+id, team_id, user_id, user_role, permission, status, created_at, updated_at   
+) VALUES (      
+2, 0, 2, 4, to_jsonb('{"Config": 0}'::text), 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (
+id, uid, nickname, password_digest, email, avatar, sso_config, customization, created_at, updated_at
+) VALUES (
+3, '00000000-0000-0000-0000-000000000002', 'observer', '$2a$10$iVIxJRgy1K6RIV389AYg3OiMIbuDyuCIja1xrHGkCljdg/6gdmWXa'::text, 'observer@gmail.com', '', to_jsonb('{"default": ""}'::text) , to_jsonb('{"Language": "en-US", "IsSubscribed": false}'::text), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+);
+
+INSERT INTO team_members (
+id, team_id, user_id, user_role, permission, status, created_at, updated_at   
+) VALUES (      
+3, 0, 3, 5, to_jsonb('{"Config": 0}'::text), 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+);

@@ -1,0 +1,2 @@
+import{k as e}from"./@illa-design-1f43bb6c.js";import{b5 as r}from"./index-4dce6ee8.js";import i from"./index-6986a8a7.js";import"./react-9b7e00e3.js";import"./@emotion-08a6282b.js";import"./codeMirror-vendor-320207e2.js";import"./lodash-lib-6e94956b.js";import"./react-icons-vendor-2430ea65.js";const m=t=>e(i,{headerName:r.t("widget.step.name"),itemName:"Step",...t});m.displayName="StepsListSetter";export{m as default};
+//# sourceMappingURL=index-8b836e5b.js.map

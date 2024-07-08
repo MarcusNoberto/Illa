@@ -1,0 +1,2 @@
+import{k as e}from"./@illa-design-1f43bb6c.js";import{b5 as r}from"./index-4dce6ee8.js";import a from"./index-6986a8a7.js";import"./react-9b7e00e3.js";import"./@emotion-08a6282b.js";import"./codeMirror-vendor-320207e2.js";import"./lodash-lib-6e94956b.js";import"./react-icons-vendor-2430ea65.js";const i=t=>e(a,{headerName:r.t("widget.eventCalendar.name.event_calendar"),itemName:"Event",...t});i.displayName="CalendarEventListSetter";export{i as default};
+//# sourceMappingURL=index-1f855c0c.js.map

@@ -1,0 +1,2 @@
+import{k as s,aE as l}from"./@illa-design-402f214a.js";import{u as c,b as i,bB as r,e as d,bf as p}from"./index-2f1869ab.js";const f=()=>{const{t:o}=c(),a=[{label:o("editor.action.panel.label.option.general.safe"),value:"sql-safe"},{label:o("editor.action.panel.label.option.general.unsafe"),value:"sql"}],e=i(r),t=d();return s(l,{colorScheme:"gray",w:"184px",size:"small",type:"button",forceEqualWidth:!0,onChange:n=>{t(p.updateCachedAction({...e,content:{...e.content,mode:n}}))},value:e.content.mode,options:a})};export{f as S};
+//# sourceMappingURL=index-7a8c0aa8.js.map
