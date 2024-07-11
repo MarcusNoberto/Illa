@@ -2604,6 +2604,7 @@
     "page.user.sign_in.placeholder.email": "Enter your email",
     "page.user.sign_in.tips.fail": "Failed to sign in",
     "page.user.sign_in.tips.success": "Signed in successfully",
+    "page.user.sign_up.tips.success": "Signed up successfully",
     "page.user.sign_in.tips.fail_account": "Incorrect email or password",
     "page.user.sign_in.title": "Welcome back",
     "page.user.sign_in.option.or": "OR",

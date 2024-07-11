@@ -3,7 +3,9 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -47,12 +49,70 @@ func (controller *Controller) GetVerificationCode(c *gin.Context) {
 	return
 }
 
+func (controller *Controller) SignUp(c *gin.Context) {
+	fmt.Println("========== INICIANDO TENTATIVA DE SIGN UP ==========")
+	// get request body
+	req := model.NewSignupRequest()
+	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
+		return
+	}
+
+	// validate payload required fields
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_REQUEST_BODY_FAILED, "validate request body error: "+err.Error())
+		return
+	}
+
+	// TODO verificar se o usuario ja existe na base e lancar um erro
+	passDigest, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
+
+	// user creation
+	user := model.User{
+		UID:            uuid.New(),
+		Nickname:       req.Nickname,
+		PasswordDigest: string(passDigest),
+		Email:          req.Email,
+		Avatar:         "",
+		SSOConfig:      `{"default": ""}`,
+		Customization:  `{"Language": "en-US", "IsSubscribed": false}`,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+
+	userId, user_register_error := controller.Storage.UserStorage.Create(&user)
+	if user_register_error != nil {
+		controller.FeedbackBadRequest(c, ERROR_USER_CREATION, "creation user error: "+user_register_error.Error())
+		return
+	}
+
+	// team member creation
+	teamMember := model.TeamMember{
+		TeamID:     0,
+		UserID:     userId,
+		UserRole:   req.Role,
+		Permission: `{"Config": 0}`,
+		Status:     1,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
+
+	_, team_member_error := controller.Storage.TeamMemberStorage.Create(&teamMember)
+	if team_member_error != nil {
+		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member user  creation error: "+team_member_error.Error())
+		return
+	}
+
+	// ok, feedback
+	controller.FeedbackOK(c, model.NewUpdateUserResponse(&user))
+	return
+}
+
 // user sign-in
 func (controller *Controller) SignIn(c *gin.Context) {
-	fmt.Println("========== INICIANDO TENTATIVA DE SIGN IN ==========")
 	// get request body
 	req := model.NewSignInRequest()
-	fmt.Printf("USUARIO TENTANDO LOGAR: ========== %s ==========\n", req.Email)
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
 		fmt.Printf("ERRO DE PARSE: ========== %s ==========\n", req.Email)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
@@ -62,16 +122,13 @@ func (controller *Controller) SignIn(c *gin.Context) {
 	// validate payload required fields
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
-		fmt.Printf("ERRO DE VALIDACAO DO BODY: ========== %s ==========\n", req.Email)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_REQUEST_BODY_FAILED, "validate request body error: "+err.Error())
 		return
 	}
 
 	// fetch user by email
 	user, err := controller.Storage.UserStorage.RetrieveByEmail(req.Email)
-	fmt.Printf("USUARIO ENCONTRADO: ========== %s ==========\n", user)
 	if err != nil {
-		fmt.Println("========== LOGIN INVALIDO ==========")
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "invalid email or password")
 		return
 	}
@@ -79,7 +136,6 @@ func (controller *Controller) SignIn(c *gin.Context) {
 	// validate password with password digest
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordDigest), []byte(req.Password))
 	if err != nil {
-		fmt.Println("========== SENHA ERRADA: %s ==========", req.Password)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "invalid email or password")
 		return
 	}

@@ -34,6 +34,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	authRouter.POST("/verification", r.Controller.GetVerificationCode)
 	authRouter.POST("/signin", r.Controller.SignIn)
 	authRouter.POST("/forgetPassword", r.Controller.ForgetPassword)
+	authRouter.POST("/signup", r.Controller.SignUp)
 
 	// user routers
 	usersRouter.GET("", r.Controller.RetrieveUserByID)
