@@ -10,6 +10,7 @@ import (
 )
 
 func (controller *Controller) ValidateAccount(c *gin.Context) {
+	fmt.Println("==================== VALIDATE ACCOUNT ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	if errInGetAuthorizationToken != nil {
 		return
@@ -34,6 +35,7 @@ func (controller *Controller) ValidateAccount(c *gin.Context) {
 }
 
 func (controller *Controller) GetTeamPermission(c *gin.Context) {
+	fmt.Println("==================== GET TEAM PERMISSION ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamID := model.TEAM_DEFAULT_ID
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
@@ -60,6 +62,7 @@ func (controller *Controller) GetTeamPermission(c *gin.Context) {
 }
 
 func (controller *Controller) CanAccess(c *gin.Context) {
+	fmt.Println("==================== CAN ACCESS ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
@@ -115,6 +118,7 @@ func (controller *Controller) CanAccess(c *gin.Context) {
 }
 
 func (controller *Controller) CanManage(c *gin.Context) {
+	fmt.Println("==================== CAN MANAGE ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamID := model.TEAM_DEFAULT_ID
 	userID := model.USER_ROLE_ANONYMOUS
@@ -159,8 +163,14 @@ func (controller *Controller) CanManage(c *gin.Context) {
 	}
 
 	// check attribute
+	fmt.Println("---------------------------------------- Search ERROR 1")
+	fmt.Println(teamMemberRole)
+	fmt.Println(unitType)
 	attrg := accesscontrol.NewAttributeGroup(teamMemberRole, unitType)
+	fmt.Println(attrg)
 	attrg.SetUnitID(unitID)
+	fmt.Println(attrg.UnitID)
+	fmt.Println(attributeID)
 	if !attrg.CanManage(attributeID) {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_ACCESS_DENIED, "you can not access this attribute due to access control policy.")
 		return
@@ -172,6 +182,7 @@ func (controller *Controller) CanManage(c *gin.Context) {
 }
 
 func (controller *Controller) CanManageSpecial(c *gin.Context) {
+	fmt.Println("==================== CAN MANAGE SPECIAL ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamID := model.TEAM_DEFAULT_ID
 	userID := model.USER_ROLE_ANONYMOUS
@@ -226,6 +237,7 @@ func (controller *Controller) CanManageSpecial(c *gin.Context) {
 }
 
 func (controller *Controller) CanModify(c *gin.Context) {
+	fmt.Println("==================== CAN MODIFY ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamID := model.TEAM_DEFAULT_ID
 	userID := model.USER_ROLE_ANONYMOUS
@@ -284,6 +296,7 @@ func (controller *Controller) CanModify(c *gin.Context) {
 }
 
 func (controller *Controller) CanDelete(c *gin.Context) {
+	fmt.Println("==================== CAN DELETE ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamID := model.TEAM_DEFAULT_ID
 	userID := model.USER_ROLE_ANONYMOUS
