@@ -394,9 +394,26 @@ func (controller *Controller) RunAction(c *gin.Context) {
 		action.AppendRuntimeInfoForVirtualResource(userAuthToken, teamID)
 	}
 
+	rawTemplate := action.ExportRawTemplateInMap()
+	isObserver, observerError := controller.AttributeGroup.IsObserver(
+		teamID,
+		userAuthToken,
+		accesscontrol.UNIT_TYPE_ACTION,
+		actionID,
+		accesscontrol.ACTION_MANAGE_RUN_ACTION,
+		userID)
+	if observerError != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_TEAM_MEMBER, "retrieve team member error: "+observerError.Error())
+		return
+	}
+	if isObserver && rawTemplate["method"] != "GET" {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_ACCESS_DENIED, "you can not access this attribute due to access control policy.")
+		return
+	}
+
 	// check action template
 	fmt.Printf("[DUMP] action.ExportTemplateInMap(): %+v\n", action.ExportTemplateInMap())
-	fmt.Printf("[DUMP] action.ExportRawTemplateInMap(): %+v\n", action.ExportRawTemplateInMap())
+	fmt.Printf("[DUMP] action.ExportRawTemplateInMap(): %+v\n", rawTemplate)
 	_, errInValidate := actionAssemblyLine.ValidateActionTemplate(action.ExportTemplateInMap())
 	if errInValidate != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_REQUEST_BODY_FAILED, "validate action template error: "+errInValidate.Error())
@@ -406,7 +423,7 @@ func (controller *Controller) RunAction(c *gin.Context) {
 	// run
 	log.Printf("[DUMP]action: %+v\n", action)
 	log.Printf("[DUMP] resource.ExportOptionsInMap(): %+v, action.ExportTemplateInMap(): %+v\n", resource.ExportOptionsInMap(), action.ExportTemplateInMap())
-	actionRunResult, errInRunAction := actionAssemblyLine.Run(resource.ExportOptionsInMap(), action.ExportTemplateInMap(), action.ExportRawTemplateInMap())
+	actionRunResult, errInRunAction := actionAssemblyLine.Run(resource.ExportOptionsInMap(), action.ExportTemplateInMap(), rawTemplate)
 	if errInRunAction != nil {
 		if strings.HasPrefix(errInRunAction.Error(), "Error 1064:") {
 			lineNumber, _ := strconv.Atoi(errInRunAction.Error()[len(errInRunAction.Error())-1:])

@@ -7,7 +7,7 @@ import (
 	"github.com/illacloud/illa-supervisor-backend/src/utils/idconvertor"
 )
 
-type GetTeamMemberResponse struct {
+type GetTeamMemberWithUserInfoForExportResponse struct {
 	ID           string                `json:"userID"`
 	UID          uuid.UUID             `json:"uid"`
 	TeamMemberID string                `json:"teamMemberID"`
@@ -23,8 +23,8 @@ type GetTeamMemberResponse struct {
 	UpdatedAt    time.Time             `json:"updatedAt"`
 }
 
-func NewGetTeamMemberResponse(i *TeamMemberWithUserInfoForExport) *GetTeamMemberResponse {
-	return &GetTeamMemberResponse{
+func NewGetTeamMemberWithUserInfoForExportResponse(i *TeamMemberWithUserInfoForExport) *GetTeamMemberWithUserInfoForExportResponse {
+	return &GetTeamMemberWithUserInfoForExportResponse{
 		ID:           idconvertor.ConvertIntToString(i.ID),
 		UID:          i.UID,
 		TeamMemberID: idconvertor.ConvertIntToString(i.TeamMemberID),
@@ -41,6 +41,6 @@ func NewGetTeamMemberResponse(i *TeamMemberWithUserInfoForExport) *GetTeamMember
 	}
 }
 
-func (resp *GetTeamMemberResponse) ExportForFeedback() interface{} {
+func (resp *GetTeamMemberWithUserInfoForExportResponse) ExportForFeedback() interface{} {
 	return resp
 }

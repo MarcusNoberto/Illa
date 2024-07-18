@@ -155,7 +155,6 @@ const (
 	ACTION_MANAGE_CREATE_FILE      // create file
 	ACTION_MANAGE_EDIT_FILE        // edit file
 	ACTION_MANAGE_CREATE_SHARELINK // create sharelink
-	ACTION_MANAGE_RUN_ACTION
 )
 
 // action delete

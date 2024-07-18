@@ -59,7 +59,6 @@ const (
 	USER_ROLE_EDITOR    = 3
 	USER_ROLE_VIEWER    = 4
 	USER_ROLE_OBSERVER  = 5
-
 )
 
 // global invite permission config
@@ -219,6 +218,14 @@ func (attrg *AttributeGroup) CanDelete(teamID int, userAuthToken string, unitTyp
 	req, errInRemote := attrg.Remote.CanDelete(userAuthToken, teamID, unitType, unitID, attribute)
 	if errInRemote != nil {
 		return false, errInRemote
+	}
+	return req, nil
+}
+
+func (attrg *AttributeGroup) IsObserver(teamID int, userAuthToken string, unitType int, unitID int, attribute int, userID int) (bool, error) {
+	req, errInRemote := attrg.Remote.IsObserver(userAuthToken, teamID, unitType, unitID, attribute, userID)
+	if errInRemote != nil {
+		return req, errInRemote
 	}
 	return req, nil
 }

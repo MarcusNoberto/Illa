@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-
 	"github.com/illacloud/illa-supervisor-backend/src/accesscontrol"
 	"github.com/illacloud/illa-supervisor-backend/src/authenticator"
 	"github.com/illacloud/illa-supervisor-backend/src/model"
@@ -117,6 +116,35 @@ func (controller *Controller) CanAccess(c *gin.Context) {
 	return
 }
 
+func (controller *Controller) IsObserver(c *gin.Context) {
+
+	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
+	teamID := model.TEAM_DEFAULT_ID
+	userID := model.USER_ROLE_ANONYMOUS
+	var errInGetUserID error
+	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {
+		userID, _, errInGetUserID = authenticator.ExtractUserIDFromToken(authorizationToken)
+	}
+	_, errInGetUnitType := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_TYPE)
+	_, errInGetUnitID := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_ID)
+	_, errInGetAttributeID := controller.GetMagicIntParamFromRequest(c, PARAM_ATTRIBUTE_ID)
+	if errInGetAuthorizationToken != nil || errInGetUserID != nil || errInGetUnitType != nil || errInGetUnitID != nil || errInGetAttributeID != nil {
+		return
+	}
+
+	teamMember, err := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndID(teamID, userID)
+	if err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_TEAM_MEMBER, "retrieve team member error: "+err.Error())
+		return
+	}
+
+	if teamMember.UserRole != 5 {
+		return
+	}
+
+	controller.FeedbackOK(c, nil)
+}
+
 func (controller *Controller) CanManage(c *gin.Context) {
 	fmt.Println("==================== CAN MANAGE ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
@@ -158,19 +186,12 @@ func (controller *Controller) CanManage(c *gin.Context) {
 			return
 		}
 		teamMemberRole = teamMember.ExportUserRole()
-		//teamMemberRole = 5
 		fmt.Printf("========== %s ==========\n", teamMemberRole)
 	}
 
 	// check attribute
-	fmt.Println("---------------------------------------- Search ERROR 1")
-	fmt.Println(teamMemberRole)
-	fmt.Println(unitType)
 	attrg := accesscontrol.NewAttributeGroup(teamMemberRole, unitType)
-	fmt.Println(attrg)
 	attrg.SetUnitID(unitID)
-	fmt.Println(attrg.UnitID)
-	fmt.Println(attributeID)
 	if !attrg.CanManage(attributeID) {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_ACCESS_DENIED, "you can not access this attribute due to access control policy.")
 		return

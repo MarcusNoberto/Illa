@@ -42,6 +42,7 @@ const (
 	GET_MULTI_USER         = "/dataControl/users/multi/%s"
 	GET_TEAM_BY_IDENTIFIER = "/dataControl/teams/byIdentifier/%s"
 	GET_TEAM_BY_ID         = "/dataControl/teams/%d"
+	IS_OBSERVER            = "/accessControl/teams/%s/unitType/%s/unitID/%s/attribute/isObserver/%s"
 )
 
 var instance *Supervisor
@@ -111,6 +112,26 @@ func (supervisor *Supervisor) CanAccess(token string, teamID int, unitType int, 
 		SetHeader("Authorization-Token", token).
 		SetHeader("Request-Token", supervisor.Validator.GenerateValidateToken(token, teamIDString, unitTypeString, unitIDString, attributeIDString)).
 		Get(supervisor.API + fmt.Sprintf(CAN_ACCESS, teamIDString, unitTypeString, unitIDString, attributeIDString))
+	if resp.StatusCode() != http.StatusOK {
+		if err != nil {
+			return false, errors.New("request illa supervisor failed: " + err.Error())
+		}
+		return false, nil
+	}
+	return true, nil
+}
+
+func (supervisor *Supervisor) IsObserver(token string, teamID int, unitType int, unitID int, attributeID int, userID int) (bool, error) {
+	teamIDString := idconvertor.ConvertIntToString(teamID)
+	unitTypeString := idconvertor.ConvertIntToString(unitType)
+	unitIDString := idconvertor.ConvertIntToString(unitID)
+	attributeIDString := idconvertor.ConvertIntToString(attributeID)
+
+	client := resty.New()
+	resp, err := client.R().
+		SetHeader("Authorization-Token", token).
+		SetHeader("Request-Token", supervisor.Validator.GenerateValidateToken(token, teamIDString, unitTypeString, unitIDString, attributeIDString)).
+		Get(supervisor.API + fmt.Sprintf(IS_OBSERVER, teamIDString, unitTypeString, unitIDString, attributeIDString))
 	if resp.StatusCode() != http.StatusOK {
 		if err != nil {
 			return false, errors.New("request illa supervisor failed: " + err.Error())
