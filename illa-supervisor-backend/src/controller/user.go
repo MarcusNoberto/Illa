@@ -50,7 +50,6 @@ func (controller *Controller) GetVerificationCode(c *gin.Context) {
 }
 
 func (controller *Controller) SignUp(c *gin.Context) {
-	fmt.Println("========== INICIANDO TENTATIVA DE SIGN UP ==========")
 	// get request body
 	req := model.NewSignupRequest()
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
@@ -81,9 +80,9 @@ func (controller *Controller) SignUp(c *gin.Context) {
 		UpdatedAt:      time.Now(),
 	}
 
-	userId, user_register_error := controller.Storage.UserStorage.Create(&user)
-	if user_register_error != nil {
-		controller.FeedbackBadRequest(c, ERROR_USER_CREATION, "creation user error: "+user_register_error.Error())
+	userId, errInUserCreation := controller.Storage.UserStorage.Create(&user)
+	if errInUserCreation != nil {
+		controller.FeedbackBadRequest(c, ERROR_USER_CREATION, "creation user error: "+errInUserCreation.Error())
 		return
 	}
 
@@ -98,14 +97,63 @@ func (controller *Controller) SignUp(c *gin.Context) {
 		UpdatedAt:  time.Now(),
 	}
 
-	_, team_member_error := controller.Storage.TeamMemberStorage.Create(&teamMember)
-	if team_member_error != nil {
-		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member user  creation error: "+team_member_error.Error())
+	_, errInCreateTeamMember := controller.Storage.TeamMemberStorage.Create(&teamMember)
+	if errInCreateTeamMember != nil {
+		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
 		return
 	}
 
 	// ok, feedback
 	controller.FeedbackOK(c, model.NewUpdateUserResponse(&user))
+	return
+}
+
+func (controller *Controller) GetJWT(c *gin.Context) {
+	// get request body
+	req := model.NewSignInRequest()
+	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
+		fmt.Printf("ERRO DE PARSE: ========== %s ==========\n", req.Email)
+		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
+		return
+	}
+
+	// validate payload required fields
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_REQUEST_BODY_FAILED, "validate request body error: "+err.Error())
+		return
+	}
+
+	// fetch user by email
+	user, err := controller.Storage.UserStorage.RetrieveByEmail(req.Email)
+	if err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "invalid email or password")
+		return
+	}
+
+	// validate password with password digest
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordDigest), []byte(req.Password))
+	if err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "invalid email or password")
+		return
+	}
+
+	// generate access token and refresh token
+	accessToken, _ := model.CreateAccessToken(user.ID, user.UID)
+	expiredAtString, errInExtract := authenticator.ExtractExpiresAtFromTokenInString(accessToken)
+	if errInExtract != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "check token expired at failed")
+		return
+	}
+	errInCacheTokenExpiredAt := controller.Cache.JWTCache.InitUserJWTTokenExpiredAt(user, expiredAtString)
+	if errInCacheTokenExpiredAt != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "cache token expired at failed")
+		return
+	}
+	c.Header("illa-token", accessToken)
+
+	// ok, feedback
+	controller.FeedbackOK(c, model.NewGetJWTResponse(accessToken))
 	return
 }
 

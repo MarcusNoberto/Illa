@@ -30,6 +30,7 @@ const PARAM_TARGET_TEAM_MEMBER_ID = "targetTeamMemberID"
 const PARAM_FILE_NAME = "fileName"
 const PARAM_TARGET_USER_IDS = "targetUserIDs"
 const PARAM_REDIRECT_URL = "redirectURL"
+const PARAM_METHOD = "method"
 
 const DEFAULT_TEAM_ID = 0
 

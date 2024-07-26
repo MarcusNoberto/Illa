@@ -32,6 +32,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	accessControlRouter.GET("/teams/:teamID/unitType/:unitType/unitID/:unitID/attribute/canManageSpecial/:attributeID", r.Controller.CanManageSpecial)
 	accessControlRouter.GET("/teams/:teamID/unitType/:unitType/unitID/:unitID/attribute/canModify/:attributeID/from/:fromID/to/:toID", r.Controller.CanModify)
 	accessControlRouter.GET("/teams/:teamID/unitType/:unitType/unitID/:unitID/attribute/canDelete/:attributeID", r.Controller.CanDelete)
+	accessControlRouter.GET("/teams/:teamID/unitType/:unitType/unitID/:unitID/attribute/isObserver/:attributeID", r.Controller.IsObserver)
 
 	// data control routers
 	dataControlRouter.GET("/users/:targetUserID", r.Controller.GetTargetUserByInternalRequest)

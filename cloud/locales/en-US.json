@@ -2647,6 +2647,7 @@
     "page.workspace.menu.agents": "AI Agents",
     "page.workspace.menu.apps": "Apps",
     "page.workspace.menu.resources": "Resources",
+    "page.workspace.menu.TeamManagement": "Team Management",
     "page.workspace.menu.drive": "Files",
     "page.workspace.menu.audit_logs": "Audit logs",
     "page.workspace.menu.community": "Community",

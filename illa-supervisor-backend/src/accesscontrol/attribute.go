@@ -52,30 +52,29 @@ const (
 // this config map target role to target invite role attribute
 // e.g. you want invite model.USER_ROLE_ADMIN, so it's mapped attribute is ACTION_ACCESS_INVITE_ADMIN
 var InviteRoleAttributeMap = map[int]int{
-    model.USER_ROLE_OWNER: ACTION_ACCESS_INVITE_OWNER, 
-    model.USER_ROLE_ADMIN: ACTION_ACCESS_INVITE_ADMIN, 
-    model.USER_ROLE_EDITOR: ACTION_ACCESS_INVITE_EDITOR, 
-    model.USER_ROLE_VIEWER: ACTION_ACCESS_INVITE_VIEWER,
-    model.USER_ROLE_OBSERVER: ACTION_ACCESS_INVITE_VIEWER, // Observer pode ser convidado como Viewer
+	model.USER_ROLE_OWNER:    ACTION_ACCESS_INVITE_OWNER,
+	model.USER_ROLE_ADMIN:    ACTION_ACCESS_INVITE_ADMIN,
+	model.USER_ROLE_EDITOR:   ACTION_ACCESS_INVITE_EDITOR,
+	model.USER_ROLE_VIEWER:   ACTION_ACCESS_INVITE_VIEWER,
+	model.USER_ROLE_OBSERVER: ACTION_ACCESS_INVITE_VIEWER, // Observer pode ser convidado como Viewer
 }
 
 // this config map target role to target manage user role attribute
 // e.g. you want modify a user to role model.USER_ROLE_EDITOR, so it's mapped attribute is ACTION_MANAGE_ROLE_TO_EDITOR
 var ModifyRoleFromAttributeMap = map[int]int{
-    model.USER_ROLE_OWNER: ACTION_MANAGE_ROLE_FROM_OWNER, 
-    model.USER_ROLE_ADMIN: ACTION_MANAGE_ROLE_FROM_ADMIN, 
-    model.USER_ROLE_EDITOR: ACTION_MANAGE_ROLE_FROM_EDITOR, 
-    model.USER_ROLE_VIEWER: ACTION_MANAGE_ROLE_FROM_VIEWER,
-    model.USER_ROLE_OBSERVER: ACTION_MANAGE_ROLE_FROM_VIEWER, // Observer pode ser modificado de Viewer
+	model.USER_ROLE_OWNER:    ACTION_MANAGE_ROLE_FROM_OWNER,
+	model.USER_ROLE_ADMIN:    ACTION_MANAGE_ROLE_FROM_ADMIN,
+	model.USER_ROLE_EDITOR:   ACTION_MANAGE_ROLE_FROM_EDITOR,
+	model.USER_ROLE_VIEWER:   ACTION_MANAGE_ROLE_FROM_VIEWER,
+	model.USER_ROLE_OBSERVER: ACTION_MANAGE_ROLE_FROM_VIEWER, // Observer pode ser modificado de Viewer
 }
 
-
 var MadifyRoleToAttributeMap = map[int]int{
-    model.USER_ROLE_OWNER: ACTION_MANAGE_ROLE_TO_OWNER, 
-    model.USER_ROLE_ADMIN: ACTION_MANAGE_ROLE_TO_ADMIN, 
-    model.USER_ROLE_EDITOR: ACTION_MANAGE_ROLE_TO_EDITOR, 
-    model.USER_ROLE_VIEWER: ACTION_MANAGE_ROLE_TO_VIEWER,
-    model.USER_ROLE_OBSERVER: ACTION_MANAGE_ROLE_TO_VIEWER, // Observer pode ser modificado para Viewer
+	model.USER_ROLE_OWNER:    ACTION_MANAGE_ROLE_TO_OWNER,
+	model.USER_ROLE_ADMIN:    ACTION_MANAGE_ROLE_TO_ADMIN,
+	model.USER_ROLE_EDITOR:   ACTION_MANAGE_ROLE_TO_EDITOR,
+	model.USER_ROLE_VIEWER:   ACTION_MANAGE_ROLE_TO_VIEWER,
+	model.USER_ROLE_OBSERVER: ACTION_MANAGE_ROLE_TO_VIEWER, // Observer pode ser modificado para Viewer
 }
 
 const (
@@ -211,20 +210,20 @@ var AttributeConfigList = map[int]map[int]map[int]map[int]bool{
 			UNIT_TYPE_JOB:               {ACTION_ACCESS_VIEW: true},
 		},
 		model.USER_ROLE_OBSERVER: {
-            UNIT_TYPE_TEAM:              {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_TEAM_MEMBER:       {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_USER:              {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_INVITE:            {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_DOMAIN:            {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_BILLING:           {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_BUILDER_DASHBOARD: {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_APP:               {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_COMPONENTS:        {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_RESOURCE:          {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_ACTION:            {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_TRANSFORMER:       {ACTION_ACCESS_VIEW: true},
-            UNIT_TYPE_JOB:               {ACTION_ACCESS_VIEW: true},
-        },
+			UNIT_TYPE_TEAM:              {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_TEAM_MEMBER:       {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_USER:              {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_INVITE:            {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_DOMAIN:            {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_BILLING:           {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_BUILDER_DASHBOARD: {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_APP:               {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_COMPONENTS:        {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_RESOURCE:          {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_ACTION:            {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_TRANSFORMER:       {ACTION_ACCESS_VIEW: true},
+			UNIT_TYPE_JOB:               {ACTION_ACCESS_VIEW: true},
+		},
 		model.USER_ROLE_ADMIN: {
 			UNIT_TYPE_TEAM:              {ACTION_ACCESS_VIEW: true},
 			UNIT_TYPE_TEAM_MEMBER:       {ACTION_ACCESS_VIEW: true},
@@ -308,6 +307,7 @@ var AttributeConfigList = map[int]map[int]map[int]map[int]bool{
 			UNIT_TYPE_TEAM_MEMBER: {ACTION_DELETE: true},
 			UNIT_TYPE_USER:        {ACTION_DELETE: true},
 		},
+		model.USER_ROLE_OBSERVER: {},
 	},
 	ATTRIBUTE_CATEGORY_MANAGE: {
 		model.USER_ROLE_ANONYMOUS: {
@@ -359,6 +359,11 @@ var AttributeConfigList = map[int]map[int]map[int]map[int]bool{
 			UNIT_TYPE_ACTION:      {ACTION_MANAGE_RUN_ACTION: true},
 			UNIT_TYPE_JOB:         {},
 		},
+		model.USER_ROLE_OBSERVER: {
+			UNIT_TYPE_APP:    {ACTION_MANAGE_RUN_ACTION: true},
+			UNIT_TYPE_ACTION: {ACTION_MANAGE_RUN_ACTION: true},
+			UNIT_TYPE_JOB:    {},
+		},
 	},
 	ATTRIBUTE_CATEGORY_SPECIAL: {
 		model.USER_ROLE_OWNER: {
@@ -375,7 +380,8 @@ var AttributeConfigList = map[int]map[int]map[int]map[int]bool{
 		model.USER_ROLE_EDITOR: {
 			UNIT_TYPE_APP: {ACTION_SPECIAL_RELEASE_APP: true},
 		},
-		model.USER_ROLE_VIEWER: {},
+		model.USER_ROLE_VIEWER:   {},
+		model.USER_ROLE_OBSERVER: {},
 	},
 }
 
