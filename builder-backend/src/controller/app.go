@@ -803,7 +803,7 @@ func (controller *Controller) ReleaseApp(c *gin.Context) {
 	fmt.Printf("[timer] phrase 0_3: %d ms\n", -(performanceTimerEnd0_2 - performanceTimerEnd0_3))
 
 	// check team can release public app, the free team can not release app as public.
-	// but when publish app to marketplace, the can re-deploy this app as public.
+	// but when publish app to marketplace, they can re-deploy this app as public.
 	if req.ExportPublic() && !app.IsPublishedToMarketplace() {
 		canManageSpecial, errInCheckAttr := controller.AttributeGroup.CanManageSpecial(
 			teamID,

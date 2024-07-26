@@ -2,12 +2,74 @@ package controller
 
 import (
 	"encoding/json"
-
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
+	"time"
 
 	"github.com/illacloud/illa-supervisor-backend/src/accesscontrol"
 	"github.com/illacloud/illa-supervisor-backend/src/model"
 )
+
+func (controller *Controller) CreateTeam(c *gin.Context) {
+	userID, errInGetUserID := controller.GetUserIDFromAuth(c)
+	if errInGetUserID != nil {
+		return
+	}
+	// get request body
+	req := model.NewTeamRequest()
+	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
+		return
+	}
+
+	// validate payload required fields
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_REQUEST_BODY_FAILED, "validate request body error: "+err.Error())
+		return
+	}
+
+	teamPermission, _ := json.Marshal(model.NewTeamPermission())
+	// team creation
+	team := model.Team{
+		UID:        uuid.New(),
+		Name:       req.Name,
+		Identifier: req.Identifier,
+		Icon:       "https://cdn.illacloud.com/email-template/people.png",
+		Permission: string(teamPermission),
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
+
+	teamID, errInTeamIDCreation := controller.Storage.TeamStorage.Create(&team)
+	if errInTeamIDCreation != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_CREATE_TEAM, "team error: "+errInTeamIDCreation.Error())
+		return
+	}
+
+	// team member creation
+	teamMember := model.TeamMember{
+		TeamID:     teamID,
+		UserID:     userID,
+		UserRole:   model.USER_ROLE_OWNER,
+		Permission: `{"Config": 0}`,
+		Status:     1,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
+
+	_, errInCreateTeamMember := controller.Storage.TeamMemberStorage.Create(&teamMember)
+	if errInCreateTeamMember != nil {
+		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
+		return
+	}
+
+	// ok, feedback
+	controller.FeedbackOK(c, model.NewMyTeamResponse(&team, &teamMember))
+	return
+
+}
 
 func (controller *Controller) GetMyTeams(c *gin.Context) {
 	userID, errInGetUserID := controller.GetUserIDFromAuth(c)
@@ -38,9 +100,9 @@ func (controller *Controller) GetMyTeams(c *gin.Context) {
 
 func (controller *Controller) UpdateTeamConfig(c *gin.Context) {
 	// get team id & user id
-	teamID := model.TEAM_DEFAULT_ID
+	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
 	userID, errInGetUserID := controller.GetUserIDFromAuth(c)
-	if errInGetUserID != nil {
+	if errInGetTeamID != nil || errInGetUserID != nil {
 		return
 	}
 
@@ -92,9 +154,9 @@ func (controller *Controller) UpdateTeamConfig(c *gin.Context) {
 
 func (controller *Controller) UpdateTeamPermission(c *gin.Context) {
 	// get team id & user id
-	teamID := model.TEAM_DEFAULT_ID
+	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
 	userID, errInGetUserID := controller.GetUserIDFromAuth(c)
-	if errInGetUserID != nil {
+	if errInGetTeamID != nil || errInGetUserID != nil {
 		return
 	}
 
