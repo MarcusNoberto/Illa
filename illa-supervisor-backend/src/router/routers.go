@@ -40,6 +40,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 
 	// user routers
 	usersRouter.GET("", r.Controller.RetrieveUserByID)
+	usersRouter.GET("/whoAmI", r.Controller.WhoAmI)
 	usersRouter.GET("/avatar/uploadAddress/fileName/:fileName", r.Controller.GetUserAvatarUploadAddress)
 	usersRouter.PATCH("/password", r.Controller.UpdatePassword)
 	usersRouter.PATCH("/nickname", r.Controller.UpdateNickname)

@@ -539,6 +539,25 @@ func (controller *Controller) RetrieveUserByID(c *gin.Context) {
 	return
 }
 
+func (controller *Controller) WhoAmI(c *gin.Context) {
+	// get user by id
+	userID, errInGetUserID := controller.GetUserIDFromAuth(c)
+	if errInGetUserID != nil {
+		return
+	}
+
+	// retrieve
+	user, err := controller.Storage.UserStorage.RetrieveByID(userID)
+	if err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_USER, "get user error: "+err.Error())
+		return
+	}
+
+	// ok, feedback
+	controller.FeedbackOK(c, model.NewGetUserByIDResponse(user))
+	return
+}
+
 func (controller *Controller) DeleteUser(c *gin.Context) {
 	// get user by id
 	userID, errInGetUserID := controller.GetUserIDFromAuth(c)
