@@ -402,6 +402,11 @@ func (controller *Controller) RunAction(c *gin.Context) {
 		actionID,
 		accesscontrol.ACTION_MANAGE_RUN_ACTION,
 		userID)
+
+	fmt.Println("--------------- BACKEND ---------------------")
+	fmt.Println(isObserver)
+	fmt.Println(rawTemplate["method"])
+	fmt.Println("----------------BACKEND FIM -----------------")
 	if observerError != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_TEAM_MEMBER, "retrieve team member error: "+observerError.Error())
 		return

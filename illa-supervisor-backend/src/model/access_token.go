@@ -15,6 +15,7 @@ type AuthClaims struct {
 	UID    uuid.UUID `json:"uuid"`
 	Random string    `json:"rnd"`
 	jwt.RegisteredClaims
+	TeamId int `json:"teamId"`
 }
 
 func ValidateAccessToken(accessToken string) (bool, error) {
@@ -43,11 +44,12 @@ func ExtractUserIDFromToken(accessToken string) (int, uuid.UUID, error) {
 	return claims.User, claims.UID, nil
 }
 
-func CreateAccessToken(id int, uid uuid.UUID) (string, error) {
+func CreateAccessToken(id int, uid uuid.UUID, teamid int) (string, error) {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	vCode := fmt.Sprintf("%06v", rnd.Int31n(10000))
 
 	claims := &AuthClaims{
+		TeamId: teamid,
 		User:   id,
 		UID:    uid,
 		Random: vCode,

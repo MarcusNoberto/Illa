@@ -25,6 +25,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	usersRouter := routerGroup.Group("/users")
 	teamsRouter := routerGroup.Group("/teams")
 	statusRouter := routerGroup.Group("/status")
+	teamMemberRouter := routerGroup.Group("/teamMember")
 
 	// register auth
 	usersRouter.Use(r.Authenticator.JWTAuth())
@@ -57,4 +58,6 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	// status router
 	statusRouter.GET("", r.Controller.Status)
 
+	//TeamMember Router
+	teamMemberRouter.POST("", r.Controller.CreateTeamMember)
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/illacloud/illa-supervisor-backend/src/accesscontrol"
 	"github.com/illacloud/illa-supervisor-backend/src/authenticator"
 	"github.com/illacloud/illa-supervisor-backend/src/model"
+	"net/http"
 )
 
 func (controller *Controller) ValidateAccount(c *gin.Context) {
@@ -71,6 +72,7 @@ func (controller *Controller) CanAccess(c *gin.Context) {
 	}
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
+	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	unitType, errInGetUnitType := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_TYPE)
 	unitID, errInGetUnitID := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_ID)
 	attributeID, errInGetAttributeID := controller.GetMagicIntParamFromRequest(c, PARAM_ATTRIBUTE_ID)
@@ -118,9 +120,13 @@ func (controller *Controller) CanAccess(c *gin.Context) {
 }
 
 func (controller *Controller) IsObserver(c *gin.Context) {
-
+	fmt.Println("----------------------- ENTROU OBSERVER --------------------------")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
+	fmt.Println(" TIMES")
+	fmt.Println(teamID)
+	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
+	fmt.Println(teamID)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {
@@ -132,17 +138,25 @@ func (controller *Controller) IsObserver(c *gin.Context) {
 	if errInGetTeamID != nil || errInGetAuthorizationToken != nil || errInGetUserID != nil || errInGetUnitType != nil || errInGetUnitID != nil || errInGetAttributeID != nil {
 		return
 	}
-
-	teamMember, err := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndID(teamID, userID)
+	fmt.Println("ENTROU OBSERVER")
+	teamMember, err := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndUserID(teamID, userID)
 	if err != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_TEAM_MEMBER, "retrieve team member error: "+err.Error())
 		return
 	}
-
+	fmt.Println(teamMember.TeamID)
+	fmt.Println(teamMember.UserID)
+	fmt.Println(teamMember.UserRole)
+	fmt.Println(model.USER_ROLE_OBSERVER)
 	if teamMember.UserRole != model.USER_ROLE_OBSERVER {
+		fmt.Println("----------------------------TESTE OBSERVER ----------------------")
+		fmt.Println("ENTROU AQUI NAO E OBSERVER")
+		c.JSON(http.StatusOK, gin.H{"isObserver": "false"})
 		return
-	}
 
+	}
+	fmt.Println("PASSOU DAQUI OBSERVER")
+	fmt.Println("E OBSERVER")
 	controller.FeedbackOK(c, nil)
 }
 
@@ -160,6 +174,7 @@ func (controller *Controller) CanManage(c *gin.Context) {
 	unitType, errInGetUnitType := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_TYPE)
 	unitID, errInGetUnitID := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_ID)
 	attributeID, errInGetAttributeID := controller.GetMagicIntParamFromRequest(c, PARAM_ATTRIBUTE_ID)
+	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	if errInGetTeamID != nil || errInGetAuthorizationToken != nil || errInGetUserID != nil || errInGetUnitType != nil || errInGetUnitID != nil || errInGetAttributeID != nil || errInGetTeamIDString != nil {
 		return
 	}
@@ -179,6 +194,7 @@ func (controller *Controller) CanManage(c *gin.Context) {
 	}
 
 	// validate user
+
 	teamMemberRole := model.USER_ROLE_ANONYMOUS
 	if userID != model.USER_ROLE_ANONYMOUS {
 		teamMember, errInRetrieveTeamMember := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndUserID(teamID, userID)
@@ -209,6 +225,7 @@ func (controller *Controller) CanManageSpecial(c *gin.Context) {
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
+	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {
@@ -264,6 +281,7 @@ func (controller *Controller) CanModify(c *gin.Context) {
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
+	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {
@@ -322,6 +340,7 @@ func (controller *Controller) CanDelete(c *gin.Context) {
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
+	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {

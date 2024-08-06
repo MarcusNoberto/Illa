@@ -17,15 +17,19 @@ package supervisor
 import (
 	"errors"
 	"fmt"
-	"net/http"
-	"strconv"
-	"sync"
-
 	resty "github.com/go-resty/resty/v2"
 	"github.com/illacloud/builder-backend/src/utils/config"
 	"github.com/illacloud/builder-backend/src/utils/idconvertor"
 	"github.com/illacloud/builder-backend/src/utils/tokenvalidator"
+	"net/http"
+	"reflect"
+	"strconv"
+	"sync"
 )
+
+type ResponseData struct {
+	IsObserver bool `json:"isObserver"`
+}
 
 const (
 	BASEURL = "http://127.0.0.1:9001/api/v1"
@@ -132,12 +136,27 @@ func (supervisor *Supervisor) IsObserver(token string, teamID int, unitType int,
 		SetHeader("Authorization-Token", token).
 		SetHeader("Request-Token", supervisor.Validator.GenerateValidateToken(token, teamIDString, unitTypeString, unitIDString, attributeIDString)).
 		Get(supervisor.API + fmt.Sprintf(IS_OBSERVER, teamIDString, unitTypeString, unitIDString, attributeIDString))
+	fmt.Println(" ------------------- LOG BACKEND SUPERVISOR ----------------")
+	fmt.Println("Status Code:", resp.StatusCode())
+	fmt.Println("Response Body:", resp.String())
+	isObserver := (resp.String())
+	fmt.Println(len(isObserver))
+	fmt.Println("--------------------------------------")
+	fmt.Println("VERIFICACAO API SUPERVISOR OBSERVER")
+	fmt.Println("--------------------------------------")
+	fmt.Println(reflect.TypeOf(isObserver))
 	if resp.StatusCode() != http.StatusOK {
 		if err != nil {
 			return false, errors.New("request illa supervisor failed: " + err.Error())
 		}
+	}
+
+	if len(isObserver) > 5 {
+		fmt.Println("ENTROU NO OBSERVER FALSE")
 		return false, nil
 	}
+
+	fmt.Println("ENTROU NO OBSERVER TRUE")
 	return true, nil
 }
 

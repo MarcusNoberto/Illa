@@ -22,7 +22,6 @@ func (controller *Controller) CreateTeam(c *gin.Context) {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
 		return
 	}
-
 	// validate payload required fields
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
@@ -30,18 +29,18 @@ func (controller *Controller) CreateTeam(c *gin.Context) {
 		return
 	}
 
-	teamPermission, _ := json.Marshal(model.NewTeamPermission())
 	// team creation
+	teamPermission, _ := json.Marshal(model.NewTeamPermission())
+	teamUID := uuid.New()
 	team := model.Team{
-		UID:        uuid.New(),
+		UID:        teamUID,
 		Name:       req.Name,
-		Identifier: req.Identifier,
+		Identifier: teamUID.String(),
 		Icon:       "https://cdn.illacloud.com/email-template/people.png",
 		Permission: string(teamPermission),
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-
 	teamID, errInTeamIDCreation := controller.Storage.TeamStorage.Create(&team)
 	if errInTeamIDCreation != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_CREATE_TEAM, "team error: "+errInTeamIDCreation.Error())
@@ -58,7 +57,6 @@ func (controller *Controller) CreateTeam(c *gin.Context) {
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-
 	_, errInCreateTeamMember := controller.Storage.TeamMemberStorage.Create(&teamMember)
 	if errInCreateTeamMember != nil {
 		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())

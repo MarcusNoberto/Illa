@@ -80,26 +80,9 @@ func (controller *Controller) SignUp(c *gin.Context) {
 		UpdatedAt:      time.Now(),
 	}
 
-	userId, errInUserCreation := controller.Storage.UserStorage.Create(&user)
+	_, errInUserCreation := controller.Storage.UserStorage.Create(&user)
 	if errInUserCreation != nil {
 		controller.FeedbackBadRequest(c, ERROR_USER_CREATION, "creation user error: "+errInUserCreation.Error())
-		return
-	}
-
-	// team member creation
-	teamMember := model.TeamMember{
-		TeamID:     0,
-		UserID:     userId,
-		UserRole:   req.Role,
-		Permission: `{"Config": 0}`,
-		Status:     1,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
-	}
-
-	_, errInCreateTeamMember := controller.Storage.TeamMemberStorage.Create(&teamMember)
-	if errInCreateTeamMember != nil {
-		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
 		return
 	}
 
@@ -139,7 +122,16 @@ func (controller *Controller) GetJWT(c *gin.Context) {
 	}
 
 	// generate access token and refresh token
-	accessToken, _ := model.CreateAccessToken(user.ID, user.UID)
+	TeamMembers, errInCreateTeamMember := controller.Storage.TeamMemberStorage.RetrieveByUserID(user.ID)
+	if errInCreateTeamMember != nil {
+		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
+		return
+	}
+	homePageTeamID := EMPTY_TEAM_ID
+	if len(TeamMembers) > 0 {
+		homePageTeamID = TeamMembers[0].TeamID
+	}
+	accessToken, _ := model.CreateAccessToken(user.ID, user.UID, homePageTeamID)
 	expiredAtString, errInExtract := authenticator.ExtractExpiresAtFromTokenInString(accessToken)
 	if errInExtract != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "check token expired at failed")
@@ -187,9 +179,21 @@ func (controller *Controller) SignIn(c *gin.Context) {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "invalid email or password")
 		return
 	}
+	TeamMembers, errInCreateTeamMember := controller.Storage.TeamMemberStorage.RetrieveByUserID(user.ID)
+	if errInCreateTeamMember != nil {
+		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
+		return
+	}
+	teamID := 1
+	if len(TeamMembers) > 0 {
+		// Pega o primeiro objeto da lista
+		firstTeamMember := TeamMembers[0]
 
+		// Pega o teamID do primeiro objeto
+		teamID = firstTeamMember.TeamID
+	}
 	// generate access token and refresh token
-	accessToken, _ := model.CreateAccessToken(user.ID, user.UID)
+	accessToken, _ := model.CreateAccessToken(user.ID, user.UID, teamID)
 	expiredAtString, errInExtract := authenticator.ExtractExpiresAtFromTokenInString(accessToken)
 	if errInExtract != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "check token expired at failed")

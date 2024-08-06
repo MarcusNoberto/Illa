@@ -33,6 +33,7 @@ const PARAM_REDIRECT_URL = "redirectURL"
 const PARAM_METHOD = "method"
 
 const DEFAULT_TEAM_ID = 0
+const EMPTY_TEAM_ID = -1
 
 const (
 	// user creation failed
