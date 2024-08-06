@@ -61,4 +61,5 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 
 	//TeamMember Router
 	teamMemberRouter.POST("", r.Controller.CreateTeamMember)
+	teamMemberRouter.PUT("", r.Controller.UpdateTeamMember)
 }
