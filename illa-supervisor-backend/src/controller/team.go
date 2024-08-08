@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/illacloud/illa-supervisor-backend/src/utils/idconvertor"
 	"time"
 
 	"github.com/illacloud/illa-supervisor-backend/src/accesscontrol"
@@ -200,4 +201,14 @@ func (controller *Controller) UpdateTeamPermission(c *gin.Context) {
 	// feedback
 	controller.FeedbackOK(c, nil)
 	return
+}
+
+func (controller *Controller) GetStringTeamCode(c *gin.Context) {
+	teamID, errInGetTeamID := controller.GetIntParamFromRequest(c, PARAM_TEAM_ID)
+	if errInGetTeamID != nil {
+		return
+	}
+	teamIDString := idconvertor.ConvertIntToString(teamID)
+
+	controller.FeedbackOK(c, model.NewGetStringTeamCode(teamIDString))
 }

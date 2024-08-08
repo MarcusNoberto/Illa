@@ -72,7 +72,6 @@ func (controller *Controller) CanAccess(c *gin.Context) {
 	}
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
-	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	unitType, errInGetUnitType := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_TYPE)
 	unitID, errInGetUnitID := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_ID)
 	attributeID, errInGetAttributeID := controller.GetMagicIntParamFromRequest(c, PARAM_ATTRIBUTE_ID)
@@ -125,7 +124,6 @@ func (controller *Controller) IsObserver(c *gin.Context) {
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
 	fmt.Println(" TIMES")
 	fmt.Println(teamID)
-	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	fmt.Println(teamID)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
@@ -174,7 +172,6 @@ func (controller *Controller) CanManage(c *gin.Context) {
 	unitType, errInGetUnitType := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_TYPE)
 	unitID, errInGetUnitID := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_ID)
 	attributeID, errInGetAttributeID := controller.GetMagicIntParamFromRequest(c, PARAM_ATTRIBUTE_ID)
-	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	if errInGetTeamID != nil || errInGetAuthorizationToken != nil || errInGetUserID != nil || errInGetUnitType != nil || errInGetUnitID != nil || errInGetAttributeID != nil || errInGetTeamIDString != nil {
 		return
 	}
@@ -225,7 +222,6 @@ func (controller *Controller) CanManageSpecial(c *gin.Context) {
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
-	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {
@@ -281,7 +277,6 @@ func (controller *Controller) CanModify(c *gin.Context) {
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
-	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {
@@ -340,7 +335,6 @@ func (controller *Controller) CanDelete(c *gin.Context) {
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
-	teamID, errInGetTeamID = authenticator.ExtractTeamIDFromToken(authorizationToken)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {

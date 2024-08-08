@@ -30,6 +30,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	// register auth
 	usersRouter.Use(r.Authenticator.JWTAuth())
 	teamsRouter.Use(r.Authenticator.JWTAuth())
+	teamMemberRouter.Use(r.Authenticator.JWTAuth())
 
 	// auth routers
 	authRouter.GET("/getJWT", r.Controller.GetJWT)
@@ -55,6 +56,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	teamsRouter.GET("/my", r.Controller.GetMyTeams)
 	teamsRouter.PATCH("/:teamID/config", r.Controller.UpdateTeamConfig)
 	teamsRouter.PATCH("/:teamID/permission", r.Controller.UpdateTeamPermission)
+	teamsRouter.GET("/:teamID/getStringCode", r.Controller.GetStringTeamCode)
 
 	// status router
 	statusRouter.GET("", r.Controller.Status)
@@ -62,4 +64,5 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	//TeamMember Router
 	teamMemberRouter.POST("", r.Controller.CreateTeamMember)
 	teamMemberRouter.PUT("", r.Controller.UpdateTeamMember)
+	teamMemberRouter.DELETE("/deleteTeamMember", r.Controller.DeleteTeamMember)
 }
