@@ -125,11 +125,14 @@ func (controller *Controller) GetJWT(c *gin.Context) {
 		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
 		return
 	}
-	homePageTeamID := EMPTY_TEAM_ID
+	var teamIDs []int
 	if len(TeamMembers) > 0 {
-		homePageTeamID = TeamMembers[0].TeamID
+		for _, member := range TeamMembers {
+			teamIDs = append(teamIDs, member.TeamID)
+		}
 	}
-	accessToken, _ := model.CreateAccessToken(user.ID, user.UID, homePageTeamID)
+
+	accessToken, _ := model.CreateAccessToken(user.ID, user.UID, teamIDs)
 	expiredAtString, errInExtract := authenticator.ExtractExpiresAtFromTokenInString(accessToken)
 	if errInExtract != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "check token expired at failed")
@@ -181,16 +184,14 @@ func (controller *Controller) SignIn(c *gin.Context) {
 		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
 		return
 	}
-	teamID := 1
+	var teamIDs []int
 	if len(TeamMembers) > 0 {
-		// Pega o primeiro objeto da lista
-		firstTeamMember := TeamMembers[0]
-
-		// Pega o teamID do primeiro objeto
-		teamID = firstTeamMember.TeamID
+		for _, member := range TeamMembers {
+			teamIDs = append(teamIDs, member.TeamID)
+		}
 	}
 	// generate access token and refresh token
-	accessToken, _ := model.CreateAccessToken(user.ID, user.UID, teamID)
+	accessToken, _ := model.CreateAccessToken(user.ID, user.UID, teamIDs)
 	expiredAtString, errInExtract := authenticator.ExtractExpiresAtFromTokenInString(accessToken)
 	if errInExtract != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "check token expired at failed")

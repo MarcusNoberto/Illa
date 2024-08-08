@@ -20,7 +20,7 @@ type AuthClaims struct {
 	User   int       `json:"user"`
 	UUID   uuid.UUID `json:"uuid"`
 	Random string    `json:"rnd"`
-	TeamId int       `json:"teamId"`
+	TeamId []int     `json:"teamId"`
 	jwt.RegisteredClaims
 }
 
@@ -81,19 +81,19 @@ func ExtractExpiresAtFromToken(accessToken string) (*jwt.NumericDate, error) {
 	return claims.ExpiresAt, nil
 }
 
-func ExtractTeamIDFromToken(accessToken string) (int, error) {
+func ExtractTeamIDFromToken(accessToken string) ([]int, error) {
 	authClaims := &AuthClaims{}
 	token, err := jwt.ParseWithClaims(accessToken, authClaims, func(token *jwt.Token) (interface{}, error) {
 		conf := config.GetInstance()
 		return []byte(conf.GetSecretKey()), nil
 	})
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	claims, ok := token.Claims.(*AuthClaims)
 	if !(ok && token.Valid) {
-		return 0, err
+		return nil, err
 	}
 
 	return claims.TeamId, nil
