@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/google/uuid"
 	"net/http"
 	"time"
@@ -95,7 +94,6 @@ func (controller *Controller) GetJWT(c *gin.Context) {
 	// get request body
 	req := model.NewSignInRequest()
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
-		fmt.Printf("ERRO DE PARSE: ========== %s ==========\n", req.Email)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
 		return
 	}
@@ -154,7 +152,6 @@ func (controller *Controller) SignIn(c *gin.Context) {
 	// get request body
 	req := model.NewSignInRequest()
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
-		fmt.Printf("ERRO DE PARSE: ========== %s ==========\n", req.Email)
 		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
 		return
 	}

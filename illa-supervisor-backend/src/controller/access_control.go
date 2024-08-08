@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/illacloud/illa-supervisor-backend/src/accesscontrol"
 	"github.com/illacloud/illa-supervisor-backend/src/authenticator"
@@ -10,7 +9,6 @@ import (
 )
 
 func (controller *Controller) ValidateAccount(c *gin.Context) {
-	fmt.Println("==================== VALIDATE ACCOUNT ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	if errInGetAuthorizationToken != nil {
 		return
@@ -35,7 +33,6 @@ func (controller *Controller) ValidateAccount(c *gin.Context) {
 }
 
 func (controller *Controller) GetTeamPermission(c *gin.Context) {
-	fmt.Println("==================== GET TEAM PERMISSION ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
@@ -63,7 +60,6 @@ func (controller *Controller) GetTeamPermission(c *gin.Context) {
 }
 
 func (controller *Controller) CanAccess(c *gin.Context) {
-	fmt.Println("==================== CAN ACCESS ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
@@ -119,12 +115,8 @@ func (controller *Controller) CanAccess(c *gin.Context) {
 }
 
 func (controller *Controller) IsObserver(c *gin.Context) {
-	fmt.Println("----------------------- ENTROU OBSERVER --------------------------")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
-	fmt.Println(" TIMES")
-	fmt.Println(teamID)
-	fmt.Println(teamID)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
 	if authorizationToken != accesscontrol.ANONYMOUS_AUTH_TOKEN {
@@ -136,30 +128,20 @@ func (controller *Controller) IsObserver(c *gin.Context) {
 	if errInGetTeamID != nil || errInGetAuthorizationToken != nil || errInGetUserID != nil || errInGetUnitType != nil || errInGetUnitID != nil || errInGetAttributeID != nil {
 		return
 	}
-	fmt.Println("ENTROU OBSERVER")
 	teamMember, err := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndUserID(teamID, userID)
 	if err != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_TEAM_MEMBER, "retrieve team member error: "+err.Error())
 		return
 	}
-	fmt.Println(teamMember.TeamID)
-	fmt.Println(teamMember.UserID)
-	fmt.Println(teamMember.UserRole)
-	fmt.Println(model.USER_ROLE_OBSERVER)
 	if teamMember.UserRole != model.USER_ROLE_OBSERVER {
-		fmt.Println("----------------------------TESTE OBSERVER ----------------------")
-		fmt.Println("ENTROU AQUI NAO E OBSERVER")
 		c.JSON(http.StatusOK, gin.H{"isObserver": "false"})
 		return
 
 	}
-	fmt.Println("PASSOU DAQUI OBSERVER")
-	fmt.Println("E OBSERVER")
 	controller.FeedbackOK(c, nil)
 }
 
 func (controller *Controller) CanManage(c *gin.Context) {
-	fmt.Println("==================== CAN MANAGE ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	userID := model.USER_ROLE_ANONYMOUS
 	var errInGetUserID error
@@ -168,7 +150,6 @@ func (controller *Controller) CanManage(c *gin.Context) {
 	}
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
-	fmt.Print("\n\n\n TEAM ID INT: ", teamID, "\n\n\n")
 	unitType, errInGetUnitType := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_TYPE)
 	unitID, errInGetUnitID := controller.GetMagicIntParamFromRequest(c, PARAM_UNIT_ID)
 	attributeID, errInGetAttributeID := controller.GetMagicIntParamFromRequest(c, PARAM_ATTRIBUTE_ID)
@@ -201,7 +182,6 @@ func (controller *Controller) CanManage(c *gin.Context) {
 			return
 		}
 		teamMemberRole = teamMember.ExportUserRole()
-		fmt.Printf("========== team member role: %s ==========\n", teamMemberRole)
 	}
 
 	// check attribute
@@ -218,7 +198,6 @@ func (controller *Controller) CanManage(c *gin.Context) {
 }
 
 func (controller *Controller) CanManageSpecial(c *gin.Context) {
-	fmt.Println("==================== CAN MANAGE SPECIAL ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
@@ -273,7 +252,6 @@ func (controller *Controller) CanManageSpecial(c *gin.Context) {
 }
 
 func (controller *Controller) CanModify(c *gin.Context) {
-	fmt.Println("==================== CAN MODIFY ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
@@ -331,7 +309,6 @@ func (controller *Controller) CanModify(c *gin.Context) {
 }
 
 func (controller *Controller) CanDelete(c *gin.Context) {
-	fmt.Println("==================== CAN DELETE ====================")
 	authorizationToken, errInGetAuthorizationToken := controller.GetStringParamFromHeader(c, PARAM_AUTHORIZATION_TOKEN)
 	teamIDString, errInGetTeamIDString := controller.GetStringParamFromRequest(c, PARAM_TEAM_ID)
 	teamID, errInGetTeamID := controller.GetMagicIntParamFromRequest(c, PARAM_TEAM_ID)
