@@ -280,7 +280,6 @@ func (controller *Controller) Logout(c *gin.Context) {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_SIGN_IN_FAILED, "clean token expired at cache failed")
 		return
 	}
-	// @todo: logout method
 	c.JSON(http.StatusOK, nil)
 	return
 }

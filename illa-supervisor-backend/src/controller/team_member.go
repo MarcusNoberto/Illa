@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/illacloud/illa-supervisor-backend/src/model"
@@ -69,6 +68,7 @@ func (controller *Controller) UpdateTeamMember(c *gin.Context) {
 	if errInGetTeamMember != nil {
 		return
 	}
+	// TODO devemos por isso no canManage.
 	if teamMember.UserRole != model.USER_ROLE_OWNER &&
 		teamMember.UserRole != model.USER_ROLE_ADMIN {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_ACCESS_DENIED, "you can not access this attribute due to access control policy.")
@@ -109,7 +109,7 @@ func (controller *Controller) DeleteTeamMember(c *gin.Context) {
 		return
 	}
 
-	// TODO nao devemos por isso no canManage?
+	// TODO devemos por isso no canManage.
 	teamMemberToDelete, errInGetTeamMember := controller.Storage.TeamMemberStorage.RetrieveByID(req.TeamMemberId)
 	myTeamMember, _ := controller.Storage.TeamMemberStorage.RetrieveByTeamIDAndUserID(teamMemberToDelete.TeamID, userID)
 
@@ -137,8 +137,6 @@ func (controller *Controller) DeleteTeamMember(c *gin.Context) {
 		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_DELETE, "team member deletion error: "+errInDeleteTeamMember.Error())
 		return
 	}
-
-	fmt.Print("\n\n\n CHEGOU AQUI 2 \n\n\n")
 
 	// ok, feedback
 	controller.FeedbackOK(c, model.NewDeleteTeamMemberResponse(teamMemberToDelete))
