@@ -50,6 +50,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	usersRouter.PATCH("/tutorialViewed", r.Controller.UpdateIsTutorialViewed)
 	usersRouter.DELETE("", r.Controller.DeleteUser)
 	usersRouter.POST("/logout", r.Controller.Logout)
+	usersRouter.GET("/getMyTeamsId", r.Controller.GetTeamIDsForUser)
 
 	// teams routers
 	teamsRouter.POST("", r.Controller.CreateTeam)

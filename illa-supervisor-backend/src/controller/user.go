@@ -591,3 +591,29 @@ func (controller *Controller) DeleteUser(c *gin.Context) {
 	controller.FeedbackOK(c, nil)
 	return
 }
+
+func (controller *Controller) GetTeamIDsForUser(c *gin.Context) {
+	// get user by id
+	userID, errInGetUserID := controller.GetUserIDFromAuth(c)
+	if errInGetUserID != nil {
+		return
+	}
+
+	// retrieve team members by user id
+	TeamMembers, errInRetrieveTeamMembers := controller.Storage.TeamMemberStorage.RetrieveByUserID(userID)
+	if errInRetrieveTeamMembers != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_GET_TEAM_MEMBER, "retrieve team members error: "+errInRetrieveTeamMembers.Error())
+		return
+	}
+
+	// collect team IDs
+	var teamIDs []int
+	if len(TeamMembers) > 0 {
+		for _, member := range TeamMembers {
+			teamIDs = append(teamIDs, member.TeamID)
+		}
+	}
+	// feedback with team IDs
+	controller.FeedbackOK(c, model.NewTeamMemberIdsResponse(teamIDs))
+	return
+}
