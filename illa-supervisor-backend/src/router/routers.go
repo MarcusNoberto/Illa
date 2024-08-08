@@ -25,10 +25,12 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	usersRouter := routerGroup.Group("/users")
 	teamsRouter := routerGroup.Group("/teams")
 	statusRouter := routerGroup.Group("/status")
+	teamMemberRouter := routerGroup.Group("/teamMember")
 
 	// register auth
 	usersRouter.Use(r.Authenticator.JWTAuth())
 	teamsRouter.Use(r.Authenticator.JWTAuth())
+	teamMemberRouter.Use(r.Authenticator.JWTAuth())
 
 	// auth routers
 	authRouter.GET("/getJWT", r.Controller.GetJWT)
@@ -39,6 +41,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 
 	// user routers
 	usersRouter.GET("", r.Controller.RetrieveUserByID)
+	usersRouter.GET("/whoAmI", r.Controller.WhoAmI)
 	usersRouter.GET("/avatar/uploadAddress/fileName/:fileName", r.Controller.GetUserAvatarUploadAddress)
 	usersRouter.PATCH("/password", r.Controller.UpdatePassword)
 	usersRouter.PATCH("/nickname", r.Controller.UpdateNickname)
@@ -53,8 +56,13 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	teamsRouter.GET("/my", r.Controller.GetMyTeams)
 	teamsRouter.PATCH("/:teamID/config", r.Controller.UpdateTeamConfig)
 	teamsRouter.PATCH("/:teamID/permission", r.Controller.UpdateTeamPermission)
+	teamsRouter.GET("/:teamID/getStringCode", r.Controller.GetStringTeamCode)
 
 	// status router
 	statusRouter.GET("", r.Controller.Status)
 
+	//TeamMember Router
+	teamMemberRouter.POST("", r.Controller.CreateTeamMember)
+	teamMemberRouter.PUT("", r.Controller.UpdateTeamMember)
+	teamMemberRouter.DELETE("/deleteTeamMember", r.Controller.DeleteTeamMember)
 }

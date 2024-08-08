@@ -35,6 +35,7 @@ func (r *Router) RegisterRouters(engine *gin.Engine) {
 	statusRouter := routerGroup.Group("/status")
 	oauth2Router := routerGroup.Group("/oauth2")
 	flowActionRouter := routerGroup.Group("/teams/:teamID/workflow/:workflowID/flowActions")
+	//	teamMemberRouter := routerGroup.Group("/teamMember/:teamID/")
 
 	// register auth
 	builderRouter.Use(remotejwtauth.RemoteJWTAuth())

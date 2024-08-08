@@ -33,6 +33,7 @@ const PARAM_REDIRECT_URL = "redirectURL"
 const PARAM_METHOD = "method"
 
 const DEFAULT_TEAM_ID = 0
+const EMPTY_TEAM_ID = -1
 
 const (
 	// user creation failed
@@ -40,6 +41,8 @@ const (
 
 	// team member failed
 	ERROR_TEAM_MEMBER_CREATION = "ERROR_TEAM_MEMBER_CREATION"
+	ERROR_TEAM_MEMBER_UPDATE   = "ERROR_TEAM_MEMBER_UPDATE "
+	ERROR_TEAM_MEMBER_DELETE   = "ERROR_TEAM_MEMBER_DELETE"
 
 	// validate failed
 	ERROR_FLAG_VALIDATE_ACCOUNT_FAILED                  = "ERROR_FLAG_VALIDATE_ACCOUNT_FAILED"

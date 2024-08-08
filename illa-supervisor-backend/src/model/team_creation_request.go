@@ -1,8 +1,7 @@
 package model
 
 type CreateTeamRequest struct {
-	Name       string `json:"name" validate:"required"`
-	Identifier string `json:"identifier" validate:"required"`
+	Name string `json:"name" validate:"required"`
 }
 
 func NewTeamRequest() *CreateTeamRequest {

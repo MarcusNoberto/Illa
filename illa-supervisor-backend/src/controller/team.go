@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/illacloud/illa-supervisor-backend/src/utils/idconvertor"
 	"time"
 
 	"github.com/illacloud/illa-supervisor-backend/src/accesscontrol"
@@ -22,7 +23,6 @@ func (controller *Controller) CreateTeam(c *gin.Context) {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
 		return
 	}
-
 	// validate payload required fields
 	validate := validator.New()
 	if err := validate.Struct(req); err != nil {
@@ -30,18 +30,18 @@ func (controller *Controller) CreateTeam(c *gin.Context) {
 		return
 	}
 
-	teamPermission, _ := json.Marshal(model.NewTeamPermission())
 	// team creation
+	teamPermission, _ := json.Marshal(model.NewTeamPermission())
+	teamUID := uuid.New()
 	team := model.Team{
-		UID:        uuid.New(),
+		UID:        teamUID,
 		Name:       req.Name,
-		Identifier: req.Identifier,
+		Identifier: teamUID.String(),
 		Icon:       "https://cdn.illacloud.com/email-template/people.png",
 		Permission: string(teamPermission),
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-
 	teamID, errInTeamIDCreation := controller.Storage.TeamStorage.Create(&team)
 	if errInTeamIDCreation != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_CREATE_TEAM, "team error: "+errInTeamIDCreation.Error())
@@ -58,7 +58,6 @@ func (controller *Controller) CreateTeam(c *gin.Context) {
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-
 	_, errInCreateTeamMember := controller.Storage.TeamMemberStorage.Create(&teamMember)
 	if errInCreateTeamMember != nil {
 		controller.FeedbackBadRequest(c, ERROR_TEAM_MEMBER_CREATION, "team member creation error: "+errInCreateTeamMember.Error())
@@ -202,4 +201,14 @@ func (controller *Controller) UpdateTeamPermission(c *gin.Context) {
 	// feedback
 	controller.FeedbackOK(c, nil)
 	return
+}
+
+func (controller *Controller) GetStringTeamCode(c *gin.Context) {
+	teamID, errInGetTeamID := controller.GetIntParamFromRequest(c, PARAM_TEAM_ID)
+	if errInGetTeamID != nil {
+		return
+	}
+	teamIDString := idconvertor.ConvertIntToString(teamID)
+
+	controller.FeedbackOK(c, model.NewGetStringTeamCode(teamIDString))
 }
